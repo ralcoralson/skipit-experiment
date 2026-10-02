@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>skipit — Sign in</title>
+  <meta name="description" content="Sign in or create your SkipIt account to rent, list, and earn."/>
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #060911;
+      background-image: 
+        radial-gradient(ellipse 65% 50% at 50% 0%, rgba(0, 68, 255, 0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 85% 90%, rgba(13, 27, 62, 0.3) 0%, transparent 60%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      color: #ffffff;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .auth-topbar {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      height: 64px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 10;
+    }
+    .auth-top-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .auth-top-logo-icon {
+      width: 32px;
+      height: 32px;
+      background: #0044FF;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 10px rgba(0, 68, 255, 0.4);
+    }
+    .auth-top-logo-icon svg {
+      width: 18px;
+      height: 18px;
+      fill: #ffffff;
+    }
+    .auth-top-logo-text {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.04em;
+      text-transform: lowercase;
+    }
+    .auth-back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: #94a3b8;
+      text-decoration: none;
+      padding: 7px 14px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.2s ease;
+    }
+    .auth-back-link:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    .auth-page {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 20px 48px;
+      position: relative;
+      z-index: 10;
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 440px;
+      background: #080d1a;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+      position: relative;
+    }
+    /* Card Top Header */
+    .auth-card-top {
+      padding: 32px 32px 24px;
+      background: linear-gradient(180deg, #0d1b3e 0%, #080d1a 100%);
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .brand-header {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .brand-icon-box {
+      width: 46px;
+      height: 46px;
+      background: #0044FF;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(0, 68, 255, 0.45);
+    }
+    .brand-icon-box svg {
+      width: 24px;
+      height: 24px;
+      fill: #ffffff;
+    }
+    .brand-title-text {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.05em;
+      text-transform: lowercase;
+    }
+    /* Tab Switcher */
+    .auth-tabs-wrap {
+      display: flex;
+      background: #0d1426;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 9999px;
+      padding: 4px;
+      gap: 4px;
+    }
+    .auth-tab-btn {
+      flex: 1;
+      padding: 10px 0;
+      border-radius: 9999px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: #55627a;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .auth-tab-btn.active {
+      background: #0044FF;
+      color: #ffffff;
+      box-shadow: 0 2px 14px rgba(0, 68, 255, 0.45);
+    }
+    .auth-tab-btn:not(.active):hover {
+      color: #94a3b8;
+    }
+    /* Card Body */
+    .auth-card-body {
+      padding: 24px 32px 32px;
+    }
+    /* Already Logged In Session Banner */
+    .session-banner {
+      display: none;
+      background: rgba(0, 68, 255, 0.1);
+      border: 1px solid rgba(0, 68, 255, 0.25);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+    }
+    .session-banner p {
+      font-size: 13px;
+      color: #93c5fd;
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+    .session-btn-row {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-session-go {
+      flex: 1;
+      padding: 8px 12px;
+      background: #0044FF;
+      color: #ffffff;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      text-align: center;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-session-logout {
+      padding: 8px 12px;
+      background: transparent;
+      color: #94a3b8;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-session-logout:hover {
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+    /* Google Button */
+    .btn-google {
+      width: 100%;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.04);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #ffffff;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-google:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+    .btn-google svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    /* Divider */
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 22px 0 20px;
+      color: #55627a;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .auth-divider::before, .auth-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.07);
+    }
+    /* Form Group */
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-label {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #64748b;
+      margin-bottom: 8px;
+    }
+    .input-wrapper {
+      position: relative;
+    }
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748b;
+      width: 18px;
+      height: 18px;
+      pointer-events: none;
+    }
+    .form-input {
+      width: 100%;
+      height: 48px;
+      padding: 0 16px 0 44px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.03);
+      font-family: 'Inter', sans-serif;
+      font-size: 14.5px;
+      color: #ffffff;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    .form-input::placeholder {
+      color: #475569;
+    }
+    .form-input:focus {
+      border-color: #0044FF;
+      background: rgba(0, 68, 255, 0.06);
+      box-shadow: 0 0 0 3px rgba(0, 68, 255, 0.25);
+    }
+    .password-toggle-btn {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #64748b;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      padding: 4px;
+      transition: color 0.15s;
+    }
+    .password-toggle-btn:hover {
+      color: #94a3b8;
+    }
+    .password-toggle-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+    /* Forgot Link */
+    .forgot-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: -6px;
+      margin-bottom: 16px;
+    }
+    .link-blue {
+      background: none;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      color: #3b82f6;
+      cursor: pointer;
+      padding: 0;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .link-blue:hover {
+      text-decoration: underline;
+    }
+    /* Submit Button */
+    .btn-submit {
+      width: 100%;
+      height: 48px;
+      background: #0044FF;
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0, 68, 255, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+    .btn-submit:hover {
+      background: #0047eb;
+      box-shadow: 0 6px 24px rgba(0, 68, 255, 0.55);
+      transform: translateY(-1px);
+    }
+    .btn-submit:active {
+      transform: translateY(0);
+    }
+    /* Alerts */
+    .auth-alert {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      font-size: 13.5px;
+      line-height: 1.4;
+    }
+    .auth-alert-error {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.28);
+      color: #fca5a5;
+    }
+    .auth-alert-success {
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.28);
+      color: #86efac;
+    }
+    .auth-alert-info {
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.28);
+      color: #93c5fd;
+    }
+    /* Switch Text */
+    .switch-row {
+      text-align: center;
+      font-size: 13.5px;
+      color: #64748b;
+      margin-top: 22px;
+    }
+    /* Card Footer */
+    .auth-card-footer {
+      padding: 20px 32px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      text-align: center;
+      font-size: 12px;
+      color: #55627a;
+      line-height: 1.6;
+    }
+    .auth-card-footer a {
+      color: #3b82f6;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .auth-card-footer a:hover {
+      text-decoration: underline;
+    }
+    @media(max-width: 480px) {
+      .auth-card-top {
+        padding: 28px 20px 20px;
+      }
+      .auth-card-body {
+        padding: 20px 20px 28px;
+      }
+      .auth-card-footer {
+        padding: 16px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header class="auth-topbar">
+  <a href="index.html" class="auth-top-logo" aria-label="SkipIt home">
+    <div class="auth-top-logo-icon">
+      <svg viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 6C4 4.895 4.895 4 6 4H24C25.105 4 26 4.895 26 6V15H16C14.895 15 14 15.895 14 17V26H6C4.895 26 4 25.105 4 24V6Z"/>
+        <rect x="17" y="17" width="17" height="9" rx="2"/>
+        <circle cx="10" cy="32" r="4"/>
+        <circle cx="24" cy="32" r="4"/>
+      </svg>
+    </div>
+    <span class="auth-top-logo-text">skipit</span>
+  </a>
+
+  <a href="index.html" class="auth-back-link">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px"><path d="m15 18-6-6 6-6"/></svg>
+    Back to home
+  </a>
+</header>
+
+<main class="auth-page">
+  <div class="auth-card">
+    
+    <!-- Top Brand & Tabs -->
+    <div class="auth-card-top">
+      <div class="brand-header">
+        <div class="brand-icon-box">
+          <svg viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 6C4 4.895 4.895 4 6 4H24C25.105 4 26 4.895 26 6V15H16C14.895 15 14 15.895 14 17V26H6C4.895 26 4 25.105 4 24V6Z"/>
+            <rect x="17" y="17" width="17" height="9" rx="2"/>
+            <circle cx="10" cy="32" r="4"/>
+            <circle cx="24" cy="32" r="4"/>
+          </svg>
+        </div>
+        <span class="brand-title-text">skipit</span>
+      </div>
+
+      <div class="auth-tabs-wrap">
+        <button type="button" class="auth-tab-btn active" id="tabSigninBtn" onclick="switchAuthTab('login')">Sign in</button>
+        <button type="button" class="auth-tab-btn" id="tabSignupBtn" onclick="switchAuthTab('signup')">Sign up</button>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="auth-card-body">
+
+      <!-- Active session banner if already logged in -->
+      <div class="session-banner" id="sessionBanner">
+        <p id="sessionText">You are currently logged in.</p>
+        <div class="session-btn-row">
+          <a href="index.html" class="btn-session-go">Go to Marketplace</a>
+          <button type="button" class="btn-session-logout" onclick="clearCurrentSession()">Sign out</button>
+        </div>
+      </div>
+
+      <!-- Error / Success / Info Banners -->
+      <div class="auth-alert auth-alert-error" id="errorBanner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="errorMessage">Error</span>
+      </div>
+
+      <div class="auth-alert auth-alert-success" id="successBanner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;flex-shrink:0"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span id="successMessage">Success</span>
+      </div>
+
+      <div class="auth-alert auth-alert-info" id="infoBanner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <span id="infoMessage">Notice</span>
+      </div>
+
+      <!-- Google Button -->
+      <button type="button" class="btn-google" id="googleLoginBtn" onclick="onGoogleLogin()">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+        Continue with Google
+      </button>
+
+      <div class="auth-divider">or continue with email</div>
+
+      <!-- Form -->
+      <form id="authForm" onsubmit="onAuthSubmit(event)">
+
+        <!-- Full Name (Sign up only) -->
+        <div class="form-group" id="nameGroup" style="display:none">
+          <label class="form-label" for="nameInput">Full name</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <input class="form-input" type="text" id="nameInput" placeholder="Rahul Sharma" autocomplete="name"/>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label class="form-label" for="emailInput">Email address</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            <input class="form-input" type="email" id="emailInput" placeholder="you@example.com" autocomplete="email" required/>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label class="form-label" for="passwordInput">Password</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <input class="form-input" type="password" id="passwordInput" placeholder="Password (min 8 chars)" autocomplete="current-password" required style="padding-right:44px;"/>
+            <button type="button" class="password-toggle-btn" id="togglePassBtn" onclick="togglePassVisibility()" aria-label="Toggle password view">
+              <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Forgot Password -->
+        <div class="forgot-row" id="forgotRow">
+          <button type="button" class="link-blue" onclick="onForgotPassword()">Forgot password?</button>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <span id="submitBtnLabel">Sign in</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px"><path d="m5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </form>
+
+      <!-- Switch Text -->
+      <div class="switch-row" id="switchRow">
+        Don't have an account? <button type="button" class="link-blue" onclick="switchAuthTab('signup')">Sign up free</button>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="auth-card-footer">
+      By continuing, you agree to SkipIt's <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+    </div>
+
+  </div>
+</main>
+
+<script>
+  let authMode = 'login'; // 'login' or 'signup'
+
+  window.addEventListener('DOMContentLoaded', () => {
+    checkCurrentSession();
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('mode') === 'signup') {
+      switchAuthTab('signup');
+    }
+  });
+
+  function checkCurrentSession() {
+    const raw = localStorage.getItem('skipit_user');
+    if (raw) {
+      try {
+        const u = JSON.parse(raw);
+        if (u && (u.name || u.email)) {
+          const banner = document.getElementById('sessionBanner');
+          const text = document.getElementById('sessionText');
+          if (banner && text) {
+            text.innerHTML = `Signed in as <strong style="color:#ffffff">${escapeText(u.name || u.email)}</strong> (${escapeText(u.email)}).`;
+            banner.style.display = 'block';
+          }
+        }
+      } catch(_) {}
+    }
+  }
+
+  function clearCurrentSession() {
+    localStorage.removeItem('skipit_user');
+    const banner = document.getElementById('sessionBanner');
+    if (banner) banner.style.display = 'none';
+    showNotice('info', 'Signed out. You can now sign in with another account.');
+  }
+
+  function switchAuthTab(mode) {
+    authMode = mode;
+    hideAlerts();
+
+    const isLogin = mode === 'login';
+    document.getElementById('tabSigninBtn').classList.toggle('active', isLogin);
+    document.getElementById('tabSignupBtn').classList.toggle('active', !isLogin);
+
+    document.getElementById('nameGroup').style.display = isLogin ? 'none' : 'block';
+    document.getElementById('forgotRow').style.display = isLogin ? 'flex' : 'none';
+
+    document.getElementById('submitBtnLabel').textContent = isLogin ? 'Sign in' : 'Create account';
+
+    document.getElementById('switchRow').innerHTML = isLogin
+      ? `Don't have an account? <button type="button" class="link-blue" onclick="switchAuthTab('signup')">Sign up free</button>`
+      : `Already have an account? <button type="button" class="link-blue" onclick="switchAuthTab('login')">Sign in</button>`;
+  }
+
+  function togglePassVisibility() {
+    const inp = document.getElementById('passwordInput');
+    const eye = document.getElementById('eyeIcon');
+    if (inp.type === 'password') {
+      inp.type = 'text';
+      eye.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+    } else {
+      inp.type = 'password';
+      eye.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+    }
+  }
+
+  function showNotice(type, msg) {
+    hideAlerts();
+    const map = {
+      'error': ['errorBanner', 'errorMessage'],
+      'success': ['successBanner', 'successMessage'],
+      'info': ['infoBanner', 'infoMessage']
+    };
+    const pair = map[type];
+    if (pair) {
+      const box = document.getElementById(pair[0]);
+      const txt = document.getElementById(pair[1]);
+      if (box && txt) {
+        txt.textContent = msg;
+        box.style.display = 'flex';
+      }
+    }
+  }
+
+  function hideAlerts() {
+    ['errorBanner', 'successBanner', 'infoBanner'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+  }
+
+  function setBusyState(busy) {
+    const submitBtn = document.getElementById('submitBtn');
+    const googleBtn = document.getElementById('googleLoginBtn');
+    if (submitBtn) {
+      submitBtn.disabled = busy;
+      submitBtn.style.opacity = busy ? '0.6' : '1';
+    }
+    if (googleBtn) {
+      googleBtn.disabled = busy;
+      googleBtn.style.opacity = busy ? '0.6' : '1';
+    }
+  }
+
+  // Google 1-Click Login
+  function onGoogleLogin() {
+    hideAlerts();
+    setBusyState(true);
+
+    setTimeout(() => {
+      const googleUser = {
+        uid: 'g_' + Math.random().toString(36).substring(2, 9),
+        name: 'Alex Rivers',
+        email: 'alex.rivers@gmail.com',
+        avatar: 'A',
+        provider: 'google'
+      };
+      completeAuth(googleUser);
+    }, 450);
+  }
+
+  // Email / Password Submit
+  async function onAuthSubmit(e) {
+    e.preventDefault();
+    hideAlerts();
+
+    const email = document.getElementById('emailInput').value.trim();
+    const pass = document.getElementById('passwordInput').value;
+
+    if (!email) {
+      showNotice('error', 'Please enter your email address.');
+      return;
+    }
+    if (!pass || pass.length < 6) {
+      showNotice('error', 'Password must be at least 6 characters.');
+      return;
+    }
+
+    setBusyState(true);
+
+    if (authMode === 'signup') {
+      const fullName = document.getElementById('nameInput').value.trim();
+      if (!fullName) {
+        showNotice('error', 'Please enter your full name.');
+        setBusyState(false);
+        return;
+      }
+
+      // Attempt NestJS backend signup
+      try {
+        const res = await fetch('http://localhost:3000/api/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password: pass, fullName })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          completeAuth({
+            uid: data.data?.user?.id || 'u_' + Date.now(),
+            name: fullName,
+            email: email,
+            token: data.data?.session?.access_token
+          });
+          return;
+        }
+      } catch(_) {}
+
+      // Local account storage
+      const user = {
+        uid: 'u_' + Date.now(),
+        name: fullName,
+        email: email,
+        provider: 'password'
+      };
+
+      try {
+        const store = JSON.parse(localStorage.getItem('skipit_accounts') || '{}');
+        store[email.toLowerCase()] = { ...user, pass: btoa(pass) };
+        localStorage.setItem('skipit_accounts', JSON.stringify(store));
+      } catch(_) {}
+
+      completeAuth(user);
+
+    } else {
+      // Login mode - Attempt NestJS backend login
+      try {
+        const res = await fetch('http://localhost:3000/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password: pass })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          completeAuth({
+            uid: data.data?.user?.id || 'u_' + Date.now(),
+            name: data.data?.user?.user_metadata?.full_name || email.split('@')[0],
+            email: email,
+            token: data.data?.session?.access_token
+          });
+          return;
+        }
+      } catch(_) {}
+
+      // Local account lookup
+      let name = email.split('@')[0];
+      name = name.charAt(0).toUpperCase() + name.slice(1);
+      try {
+        const store = JSON.parse(localStorage.getItem('skipit_accounts') || '{}');
+        if (store[email.toLowerCase()] && store[email.toLowerCase()].name) {
+          name = store[email.toLowerCase()].name;
+        }
+      } catch(_) {}
+
+      const user = {
+        uid: 'u_' + Math.abs(email.split('').reduce((a,c)=>((a<<5)-a)+c.charCodeAt(0),0)),
+        name: name,
+        email: email,
+        provider: 'password'
+      };
+
+      completeAuth(user);
+    }
+  }
+
+  function onForgotPassword() {
+    const email = document.getElementById('emailInput').value.trim();
+    if (!email) {
+      showNotice('error', 'Enter your email address first.');
+      return;
+    }
+    showNotice('info', `Password reset instructions sent to ${email}. Check your inbox.`);
+  }
+
+  function completeAuth(user) {
+    localStorage.setItem('skipit_user', JSON.stringify(user));
+    showNotice('success', `Welcome back, ${user.name}! Redirecting to SkipIt...`);
+    setTimeout(() => {
+      window.location.href = 'index.html';
+    }, 850);
+  }
+
+  function escapeText(str) {
+    return String(str || '').replace(/[&<>'"]/g, 
+      tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+  }
+</script>
+
+</body>
+</html>

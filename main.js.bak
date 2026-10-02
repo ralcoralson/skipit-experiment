@@ -1,0 +1,590 @@
+/* SkipIt — Main Marketplace JavaScript */
+
+// ============================================================
+// SCROLL REVEAL OBSERVER
+// ============================================================
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      revealObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// ============================================================
+// NAVBAR — Scroll State
+// ============================================================
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 20) {
+    navbar?.classList.add('scrolled');
+  } else {
+    navbar?.classList.remove('scrolled');
+  }
+}, { passive: true });
+
+// ============================================================
+// HAMBURGER / MOBILE NAV
+// ============================================================
+const hamburger = document.getElementById('hamburger');
+const mobileNav = document.getElementById('mobileNav');
+
+hamburger?.addEventListener('click', () => {
+  const isOpen = mobileNav?.classList.contains('open');
+  mobileNav?.classList.toggle('open');
+  document.body.style.overflow = isOpen ? '' : 'hidden';
+
+  const spans = hamburger.querySelectorAll('span');
+  if (!isOpen) {
+    spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+    spans[1].style.opacity = '0';
+    spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+  } else {
+    spans[0].style.transform = '';
+    spans[1].style.opacity = '';
+    spans[2].style.transform = '';
+  }
+});
+
+document.querySelectorAll('.mobile-nav-link').forEach(link => {
+  link.addEventListener('click', () => {
+    mobileNav?.classList.remove('open');
+    document.body.style.overflow = '';
+    const spans = hamburger?.querySelectorAll('span');
+    spans?.forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+  });
+});
+
+// ============================================================
+// SEARCH MODAL (CMD+K / NAV ICON)
+// ============================================================
+const searchOverlay = document.getElementById('searchOverlay');
+const searchInput = document.getElementById('searchInput');
+
+function openSearch() {
+  searchOverlay?.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => searchInput?.focus(), 200);
+}
+
+function closeSearch() {
+  searchOverlay?.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.querySelectorAll('.js-open-search').forEach(btn => {
+  btn.addEventListener('click', openSearch);
+});
+
+searchOverlay?.addEventListener('click', (e) => {
+  if (e.target === searchOverlay) closeSearch();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeSearch();
+    closeListingModal();
+    closeListModal();
+    closeDashboardModal();
+  }
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    openSearch();
+  }
+});
+
+document.querySelectorAll('.search-quick-cat').forEach(cat => {
+  cat.addEventListener('click', () => {
+    if (searchInput) searchInput.value = cat.textContent;
+    searchInput?.focus();
+  });
+});
+
+document.getElementById('searchForm')?.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const val = searchInput?.value?.trim();
+  if (val) {
+    const mainInp = document.getElementById('mainSearchKeyword');
+    if (mainInp) mainInp.value = val;
+    window.filterMarketplace();
+    closeSearch();
+    document.getElementById('marketplace')?.scrollIntoView({ behavior: 'smooth' });
+  }
+});
+
+// ============================================================
+// MARKETPLACE PRODUCT DATA
+// ============================================================
+let products = [
+  {
+    id: 'camera',
+    title: 'Sony Alpha Mirrorless Camera',
+    category: 'Cameras',
+    catKey: 'cameras',
+    location: 'Bengaluru, KA',
+    price: '₹799',
+    deposit: '₹5,000',
+    rating: '4.9',
+    reviews: 34,
+    owner: 'Rahul M.',
+    image: 'images/product_camera.jpg',
+    status: 'Available Now',
+    condition: 'Like New',
+    description: 'Sony Alpha mirrorless camera with 28-70mm kit lens. Ideal for photography projects, travel shoots, and video production. Includes dual batteries, fast charger, 128GB memory card, and carry case.',
+  },
+  {
+    id: 'ps5',
+    title: 'PlayStation 5 Console',
+    category: 'Gaming',
+    catKey: 'gaming',
+    location: 'Mumbai, MH',
+    price: '₹599',
+    deposit: '₹8,000',
+    rating: '4.8',
+    reviews: 22,
+    owner: 'Priya K.',
+    image: 'images/product_ps5.jpg',
+    status: 'Available Now',
+    condition: 'Pristine',
+    description: 'PlayStation 5 Disc Edition with DualSense wireless controller. Includes ultra-high speed HDMI cable and power cord. Pre-installed with top multiplayer games. Ideal for weekend tournaments.',
+  },
+  {
+    id: 'projector',
+    title: 'Portable Mini HD Projector',
+    category: 'Electronics',
+    catKey: 'electronics',
+    location: 'Pune, MH',
+    price: '₹349',
+    deposit: '₹2,500',
+    rating: '4.7',
+    reviews: 18,
+    owner: 'Aditya S.',
+    image: 'images/product_projector.jpg',
+    status: 'Available Now',
+    condition: 'Excellent',
+    description: 'Compact 1080p portable LED projector for home movie nights, outdoor screenings, or office presentations. Includes HDMI, USB-C adapter, tripod, and remote.',
+  },
+  {
+    id: 'bike',
+    title: 'Mountain Bike — Carbon Frame',
+    category: 'Sports',
+    catKey: 'sports',
+    location: 'Delhi, DL',
+    price: '₹449',
+    deposit: '₹3,000',
+    rating: '4.6',
+    reviews: 12,
+    owner: 'Neha R.',
+    image: 'images/product_bike.jpg',
+    status: 'Available Now',
+    condition: 'Good Condition',
+    description: 'High-performance carbon frame mountain bike with 21 Shimano gears and hydraulic disc brakes. Perfect for trail riding, weekend tours, and urban commutes. Helmet included.',
+  },
+  {
+    id: 'drill',
+    title: 'Cordless Power Drill Kit (18V)',
+    category: 'Tools',
+    catKey: 'tools',
+    location: 'Hyderabad, TS',
+    price: '₹199',
+    deposit: '₹1,500',
+    rating: '4.8',
+    reviews: 41,
+    owner: 'Suresh P.',
+    image: 'images/product_drill.jpg',
+    status: 'Available Now',
+    condition: 'Heavy Duty',
+    description: 'Professional cordless hammer drill with complete masonry, metal, and wood bit set. Comes with 2 lithium-ion batteries, fast charger, and rugged carrying case.',
+  },
+  {
+    id: 'speaker',
+    title: 'DJ Party Speaker System (1000W)',
+    category: 'Events',
+    catKey: 'events',
+    location: 'Chennai, TN',
+    price: '₹1,299',
+    deposit: '₹6,000',
+    rating: '4.9',
+    reviews: 29,
+    owner: 'Arjun V.',
+    image: 'images/product_speaker.jpg',
+    status: 'Available Now',
+    condition: 'Pro Audio',
+    description: 'High-power 1000W Bluetooth PA speaker with synchronized LED party lighting, wireless microphones, and mixer input. Perfect for birthday parties, weddings, and corporate gatherings.',
+  },
+  {
+    id: 'monitor',
+    title: 'Curved Gaming Monitor 32" (165Hz)',
+    category: 'Electronics',
+    catKey: 'electronics',
+    location: 'Bengaluru, KA',
+    price: '₹499',
+    deposit: '₹4,000',
+    rating: '4.7',
+    reviews: 15,
+    owner: 'Dev T.',
+    image: 'images/product_monitor.jpg',
+    status: 'Available Now',
+    condition: 'Like New',
+    description: '32-inch curved 1440p gaming monitor with 165Hz refresh rate and 1ms response time. HDR support, DisplayPort, and HDMI connectivity. Great for design sprints or gaming.',
+  },
+  {
+    id: 'tent',
+    title: '4-Person Waterproof Camping Tent',
+    category: 'Camping',
+    catKey: 'camping',
+    location: 'Jaipur, RJ',
+    price: '₹299',
+    deposit: '₹2,000',
+    rating: '4.6',
+    reviews: 37,
+    owner: 'Kavya L.',
+    image: 'images/product_tent.jpg',
+    status: 'Available Now',
+    condition: 'Clean & Weatherproof',
+    description: 'Spacious 4-person double-layer dome tent with waterproof rainfly, mesh ventilation windows, ground stakes, and lightweight carry bag. Sets up in under 5 minutes.',
+  },
+];
+
+window._products = {};
+products.forEach(p => { window._products[p.id] = p; });
+
+// ============================================================
+// RENDER PRODUCT CARDS (HIGH CONTRAST)
+// ============================================================
+function renderProductCard(p) {
+  const initials = p.owner.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  return `
+    <div class="product-card reveal" data-category="${p.catKey}" data-location="${p.location}" onclick="openListingModal(window._products['${p.id}'])">
+      <div class="product-card-image">
+        <img src="${p.image}" alt="${p.title}" loading="lazy">
+        <div class="product-card-status">
+          <span class="badge badge--green">
+            <svg viewBox="0 0 8 8" fill="currentColor" style="width:7px;height:7px"><circle cx="4" cy="4" r="3"/></svg>
+            ${p.status}
+          </span>
+        </div>
+        <button class="product-card-wishlist" aria-label="Save listing" onclick="event.stopPropagation(); this.classList.toggle('saved');">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </button>
+      </div>
+      <div class="product-card-body">
+        <div class="product-card-meta">
+          <div class="product-card-location">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            ${p.location}
+          </div>
+          <div class="product-card-rating">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            ${p.rating}
+          </div>
+        </div>
+        <div class="product-card-title">${p.title}</div>
+        <div class="product-card-owner">
+          <div class="owner-avatar">${initials}</div>
+          <span class="product-card-owner-name">${p.owner}</span>
+          <div class="owner-verified">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Verified
+          </div>
+        </div>
+        <div class="product-card-footer">
+          <div class="product-card-price">
+            <div class="product-price-main">${p.price}</div>
+            <div class="product-price-per">per day</div>
+          </div>
+          <button class="btn btn--primary btn--sm" onclick="event.stopPropagation(); openListingModal(window._products['${p.id}'])">
+            Rent Now →
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderListings(list) {
+  const listingsGrid = document.getElementById('listingsGrid');
+  if (!listingsGrid) return;
+
+  if (list.length === 0) {
+    listingsGrid.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 64px 20px; background: var(--glass-card); border-radius: var(--radius-2xl); border: 1px solid var(--glass-border);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:48px;height:48px;color:var(--text-muted);margin:0 auto 16px"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <h3 style="font-size:1.25rem;font-weight:700;margin-bottom:8px;color:#fff">No listings found</h3>
+        <p style="color:var(--text-secondary);margin-bottom:20px;max-width:400px;margin-left:auto;margin-right:auto">Try changing your search terms, removing filters, or searching in a different city.</p>
+        <button class="btn btn--primary" onclick="resetFilters()">Reset All Filters</button>
+      </div>
+    `;
+    return;
+  }
+
+  listingsGrid.innerHTML = list.map(renderProductCard).join('');
+  listingsGrid.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+}
+
+// Initial render
+renderListings(products);
+
+// ============================================================
+// DYNAMIC SEARCH & FILTERING
+// ============================================================
+window.filterMarketplace = () => {
+  const keyword = (document.getElementById('mainSearchKeyword')?.value || '').toLowerCase().trim();
+  const cat = (document.getElementById('mainSearchCat')?.value || 'all').toLowerCase();
+  const loc = (document.getElementById('mainSearchLoc')?.value || 'all').toLowerCase();
+
+  const filtered = products.filter(p => {
+    const matchesKeyword = !keyword ||
+      p.title.toLowerCase().includes(keyword) ||
+      p.description.toLowerCase().includes(keyword) ||
+      p.category.toLowerCase().includes(keyword);
+
+    const matchesCat = cat === 'all' || p.catKey === cat || (cat === 'cameras' && p.catKey === 'photography');
+    const matchesLoc = loc === 'all' || p.location.toLowerCase().includes(loc);
+
+    return matchesKeyword && matchesCat && matchesLoc;
+  });
+
+  renderListings(filtered);
+};
+
+window.resetFilters = () => {
+  const kw = document.getElementById('mainSearchKeyword');
+  if (kw) kw.value = '';
+  const cat = document.getElementById('mainSearchCat');
+  if (cat) cat.value = 'all';
+  const loc = document.getElementById('mainSearchLoc');
+  if (loc) loc.value = 'all';
+
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === 'all'));
+  document.querySelectorAll('.category-card').forEach(c => c.classList.remove('active'));
+
+  renderListings(products);
+};
+
+window.selectCategory = (catKey) => {
+  document.querySelectorAll('.cat-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.cat === catKey);
+  });
+  document.querySelectorAll('.category-card').forEach(card => {
+    card.classList.toggle('active', card.dataset.cat === catKey);
+  });
+
+  const catSelect = document.getElementById('mainSearchCat');
+  if (catSelect) catSelect.value = catKey;
+
+  window.filterMarketplace();
+  document.getElementById('marketplace')?.scrollIntoView({ behavior: 'smooth' });
+};
+
+// Filter pill click listeners
+document.querySelectorAll('.cat-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    window.selectCategory(btn.dataset.cat);
+  });
+});
+
+// Category card click listeners
+document.querySelectorAll('.category-card').forEach(card => {
+  card.addEventListener('click', () => {
+    window.selectCategory(card.dataset.cat);
+  });
+});
+
+// Live filter on search inputs
+document.getElementById('mainSearchKeyword')?.addEventListener('input', window.filterMarketplace);
+document.getElementById('mainSearchCat')?.addEventListener('change', window.filterMarketplace);
+document.getElementById('mainSearchLoc')?.addEventListener('change', window.filterMarketplace);
+
+// ============================================================
+// LISTING DETAIL MODAL WITH INTERACTIVE BOOKING CALCULATOR
+// ============================================================
+const listingOverlay = document.getElementById('listingOverlay');
+let currentProduct = null;
+let bookingDays = 3;
+let hasProtection = false;
+
+function updateBookingCalculation() {
+  if (!currentProduct) return;
+  const priceNum = parseInt(currentProduct.price.replace(/[^\d]/g, '')) || 499;
+  const depositNum = parseInt(currentProduct.deposit.replace(/[^\d]/g, '')) || 2500;
+  const subtotal = priceNum * bookingDays;
+  const protectionFee = hasProtection ? 99 : 0;
+  const total = subtotal + depositNum + protectionFee;
+
+  const stepperVal = document.getElementById('lmStepperVal');
+  if (stepperVal) stepperVal.textContent = `${bookingDays} ${bookingDays === 1 ? 'day' : 'days'}`;
+
+  const calcSubtotal = document.getElementById('lmCalcSubtotal');
+  if (calcSubtotal) calcSubtotal.textContent = `₹${subtotal.toLocaleString('en-IN')}`;
+
+  const calcDeposit = document.getElementById('lmCalcDeposit');
+  if (calcDeposit) calcDeposit.textContent = `₹${depositNum.toLocaleString('en-IN')}`;
+
+  const calcProt = document.getElementById('lmCalcProt');
+  if (calcProt) calcProt.textContent = hasProtection ? '₹99' : '₹0';
+
+  const calcTotal = document.getElementById('lmCalcTotal');
+  if (calcTotal) calcTotal.textContent = `₹${total.toLocaleString('en-IN')}`;
+}
+
+window.changeDuration = (delta) => {
+  bookingDays = Math.max(1, Math.min(30, bookingDays + delta));
+  updateBookingCalculation();
+};
+
+window.toggleProtection = (e) => {
+  hasProtection = e.target.checked;
+  updateBookingCalculation();
+};
+
+function openListingModal(data) {
+  if (!data || !listingOverlay) return;
+  currentProduct = data;
+  bookingDays = 3;
+  hasProtection = false;
+
+  const protBox = document.getElementById('lmProtectionBox');
+  if (protBox) protBox.checked = false;
+
+  const img = document.getElementById('lmImage');
+  const title = document.getElementById('lmTitle');
+  const location = document.getElementById('lmLocation');
+  const price = document.getElementById('lmPrice');
+  const desc = document.getElementById('lmDesc');
+  const ownerName = document.getElementById('lmOwnerName');
+  const ownerInitial = document.getElementById('lmOwnerInitial');
+  const deposit = document.getElementById('lmDeposit');
+  const cond = document.getElementById('lmCondition');
+
+  if (img) img.src = data.image;
+  if (title) title.textContent = data.title;
+  if (location) location.textContent = data.location;
+  if (price) price.textContent = data.price;
+  if (desc) desc.textContent = data.description;
+  if (ownerName) ownerName.textContent = data.owner;
+  if (ownerInitial) ownerInitial.textContent = data.owner.charAt(0).toUpperCase();
+  if (deposit) deposit.textContent = data.deposit;
+  if (cond) cond.textContent = data.condition || 'Verified';
+
+  updateBookingCalculation();
+
+  listingOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeListingModal() {
+  listingOverlay?.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+listingOverlay?.addEventListener('click', (e) => {
+  if (e.target === listingOverlay) closeListingModal();
+});
+document.getElementById('lmClose')?.addEventListener('click', closeListingModal);
+
+// ============================================================
+// LIST AN ITEM MODAL (FOR OWNERS)
+// ============================================================
+window.openListModal = () => {
+  const modal = document.getElementById('listItemModal');
+  if (modal) modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+
+window.closeListModal = () => {
+  const modal = document.getElementById('listItemModal');
+  if (modal) modal.classList.remove('open');
+  document.body.style.overflow = '';
+};
+
+window.handleCreateListing = (e) => {
+  e.preventDefault();
+  const title = document.getElementById('newTitle')?.value.trim();
+  const cat = document.getElementById('newCategory')?.value || 'tools';
+  const price = document.getElementById('newPrice')?.value.trim() || '499';
+  const deposit = document.getElementById('newDeposit')?.value.trim() || '2000';
+  const loc = document.getElementById('newLocation')?.value.trim() || 'Bengaluru, KA';
+  const desc = document.getElementById('newDesc')?.value.trim() || 'Available for rent on SkipIt.';
+
+  const newItem = {
+    id: 'item_' + Date.now(),
+    title: title || 'New Rental Listing',
+    category: cat.charAt(0).toUpperCase() + cat.slice(1),
+    catKey: cat.toLowerCase(),
+    location: loc,
+    price: '₹' + price.replace(/[^\d]/g, ''),
+    deposit: '₹' + parseInt(deposit.replace(/[^\d]/g, '')).toLocaleString('en-IN'),
+    rating: '5.0',
+    reviews: 1,
+    owner: 'You (Owner)',
+    image: 'images/product_camera.jpg',
+    status: 'Available Now',
+    condition: 'Verified Item',
+    description: desc,
+  };
+
+  products.unshift(newItem);
+  window._products[newItem.id] = newItem;
+  renderListings(products);
+  closeListModal();
+  alert('🎉 Congratulations! Your item has been listed on the SkipIt marketplace.');
+  document.getElementById('marketplace')?.scrollIntoView({ behavior: 'smooth' });
+};
+
+// ============================================================
+// USER DASHBOARD MODAL
+// ============================================================
+window.openDashboardModal = () => {
+  const modal = document.getElementById('userDashboardModal');
+  if (modal) modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+
+window.closeDashboardModal = () => {
+  const modal = document.getElementById('userDashboardModal');
+  if (modal) modal.classList.remove('open');
+  document.body.style.overflow = '';
+};
+
+window.scrollToMarketplace = () => {
+  document.getElementById('marketplace')?.scrollIntoView({ behavior: 'smooth' });
+};
+
+window.executeSearch = () => {
+  if (typeof window.filterMarketplace === 'function') {
+    window.filterMarketplace();
+  }
+  window.scrollToMarketplace();
+};
+
+// Smooth anchor scrolling
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', (e) => {
+    const href = link.getAttribute('href');
+    if (href === '#' || !href) return;
+    const target = document.querySelector(href);
+    if (target) {
+      e.preventDefault();
+      const top = target.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+  });
+});
+
+// Check NestJS API connection asynchronously
+fetch('http://localhost:3000/api/listings')
+  .then(res => res.json())
+  .then(json => {
+    if (json?.data?.length) {
+      console.log('SkipIt 2.0 API connected: ' + json.data.length + ' active listings.');
+    }
+  })
+  .catch(() => {
+    console.log('SkipIt API running in offline resilient mode.');
+  });

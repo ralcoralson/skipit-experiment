@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>skipit — Skip buying. Rent smarter.</title>
+  <meta name="description" content="SkipIt is a peer-to-peer rental marketplace where you can rent products from real people nearby. Skip the cost of ownership. Rent what you need, earn from what you own.">
+  <meta name="theme-color" content="#2563eb">
+  <meta property="og:title" content="skipit — Skip buying. Rent smarter.">
+  <meta property="og:description" content="Peer-to-peer rental marketplace. Rent what you need, earn from what you own.">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+
+<!-- ============================================================
+     SEARCH MODAL
+     ============================================================ -->
+<div class="search-overlay" id="searchOverlay" role="dialog" aria-label="Search">
+  <div class="search-modal">
+    <form id="searchForm">
+      <div class="search-input-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input id="searchInput" type="text" placeholder="Search cameras, laptops, tools..." autocomplete="off">
+      </div>
+    </form>
+    <div class="search-hints">
+      <p>Popular searches</p>
+      <div class="search-quick-cats">
+        <button class="search-quick-cat">Camera</button>
+        <button class="search-quick-cat">Gaming Console</button>
+        <button class="search-quick-cat">Projector</button>
+        <button class="search-quick-cat">Power Tools</button>
+        <button class="search-quick-cat">Bicycle</button>
+        <button class="search-quick-cat">Laptop</button>
+        <button class="search-quick-cat">Tent</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     LISTING DETAIL MODAL
+     ============================================================ -->
+<div class="listing-overlay" id="listingOverlay" role="dialog" aria-label="Listing detail">
+  <div class="listing-modal">
+    <button class="listing-modal-close" id="lmClose" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="listing-modal-image">
+      <img id="lmImage" src="" alt="Product">
+    </div>
+    <div class="listing-modal-body">
+      <span class="badge badge--green" style="margin-bottom:12px">
+        <svg viewBox="0 0 8 8" fill="currentColor" style="width:8px;height:8px"><circle cx="4" cy="4" r="3"/></svg>
+        Available Now
+      </span>
+      <h2 id="lmTitle" style="font-family:var(--font-sans);font-size:1.375rem;font-weight:800;letter-spacing:-.025em;line-height:1.2;margin-bottom:4px"></h2>
+      <div style="display:flex;align-items:center;gap:6px;font-size:.875rem;color:var(--text-muted);margin-bottom:4px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span id="lmLocation"></span>
+      </div>
+      <div class="lm-price-row">
+        <span class="lm-price-main" id="lmPrice"></span>
+        <span class="lm-price-per">/ day</span>
+      </div>
+      <p id="lmDesc" style="font-size:.9375rem;color:var(--text-secondary);line-height:1.7;margin-bottom:16px"></p>
+      <div class="lm-avail-row">
+        <div class="lm-avail-dot"></div>
+        Available — ready to rent
+      </div>
+      <div class="lm-divider"></div>
+      <div class="lm-owner-row">
+        <div class="lm-owner-avatar" id="lmOwnerInitial">R</div>
+        <div>
+          <div class="lm-owner-name" id="lmOwnerName"></div>
+          <div class="lm-owner-sub">Verified owner · SkipIt member</div>
+        </div>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:4px;font-size:.8125rem;font-weight:600;color:var(--green-600)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Verified
+        </div>
+      </div>
+      <div class="lm-deposit-row">
+        <span class="lm-deposit-label">Refundable Deposit</span>
+        <span class="lm-deposit-val" id="lmDeposit"></span>
+      </div>
+      <div style="background:var(--bg-subtle);border-radius:var(--radius-lg);padding:12px 16px;font-size:.8125rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.5">
+        <strong style="color:var(--text-primary)">Logistics:</strong> Pickup and return coordinated directly with the owner per the rental agreement. SkipIt does not provide logistics.
+      </div>
+      <button class="btn btn--primary btn--lg" style="width:100%;justify-content:center" onclick="alert('Sign up to request a rental!')">
+        Request to Rent
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px"><path d="m5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+      <p style="font-size:.75rem;color:var(--text-muted);text-align:center;margin-top:10px">By requesting, you agree to SkipIt's rental terms.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MOBILE STICKY CTA
+     ============================================================ -->
+<div class="mobile-cta-bar">
+  <a href="#marketplace" class="btn btn--outline btn--sm">Explore</a>
+  <a href="#how-it-works" class="btn btn--primary btn--sm">List an Item</a>
+</div>
+
+<!-- ============================================================
+     NAVBAR
+     ============================================================ -->
+<nav id="navbar" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="#hero" class="nav-logo" aria-label="SkipIt home">
+      <div class="nav-logo-icon">
+        <svg viewBox="0 0 38 38" fill="white" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 6C4 4.895 4.895 4 6 4H24C25.105 4 26 4.895 26 6V15H16C14.895 15 14 15.895 14 17V26H6C4.895 26 4 25.105 4 24V6Z"/>
+          <rect x="17" y="17" width="17" height="9" rx="2"/>
+          <circle cx="10" cy="32" r="4"/>
+          <circle cx="24" cy="32" r="4"/>
+        </svg>
+      </div>
+      <span class="nav-logo-text">skipit</span>
+    </a>
+    <div class="nav-links">
+      <a href="#marketplace" class="nav-link">Marketplace</a>
+      <a href="#how-it-works" class="nav-link">How It Works</a>
+      <a href="#for-owners" class="nav-link">List an Item</a>
+      <a href="#trust" class="nav-link">Safety</a>
+      <a href="#cta-section" class="nav-link">About</a>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-search-btn js-open-search" aria-label="Search" id="navSearchBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+      </button>
+      <a href="#" class="nav-login">Log in</a>
+      <a href="#for-owners" class="btn btn--primary btn--sm">List an Item</a>
+    </div>
+    <button class="nav-hamburger" id="hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Nav Panel -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-links">
+    <a href="#marketplace" class="mobile-nav-link">Marketplace</a>
+    <a href="#how-it-works" class="mobile-nav-link">How It Works</a>
+    <a href="#for-owners" class="mobile-nav-link">List an Item</a>
+    <a href="#trust" class="mobile-nav-link">Safety &amp; Trust</a>
+    <a href="#protection" class="mobile-nav-link">Protection</a>
+    <a href="#cta-section" class="mobile-nav-link">About SkipIt</a>
+  </div>
+  <div class="mobile-nav-actions">
+    <a href="#" class="btn btn--outline" style="justify-content:center">Log in</a>
+    <a href="#for-owners" class="btn btn--primary" style="justify-content:center">List an Item</a>
+  </div>
+</div>
+
+<main>
+
+<!-- ============================================================
+     1. HERO
+     ============================================================ -->
+<section id="hero" aria-label="Hero">
+  <div class="hero-bg-pattern"></div>
+  <div class="hero-inner">
+    <!-- Left Content -->
+    <div class="hero-left">
+      <div class="hero-badge reveal">
+        <div class="hero-badge-dot"></div>
+        Peer-to-peer rental marketplace · India
+      </div>
+      <h1 class="hero-headline reveal reveal-delay-1">
+        Why buy it when you can <span>SkipIt?</span>
+      </h1>
+      <p class="hero-subheadline reveal reveal-delay-2">
+        Rent what you need. Earn from what you own.
+      </p>
+      <p class="hero-description reveal reveal-delay-3">
+        SkipIt is a peer-to-peer rental marketplace that helps people access products without the cost and commitment of buying them.
+      </p>
+      <div class="hero-ctas reveal reveal-delay-4">
+        <a href="#marketplace" class="btn btn--primary btn--lg" id="hero-explore-btn">
+          Explore Rentals
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px"><path d="m5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#for-owners" class="btn btn--outline btn--lg" id="hero-list-btn">List Your Item</a>
+      </div>
+      <div class="hero-trust reveal reveal-delay-5">
+        <div class="hero-trust-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Verified owners
+        </div>
+        <div class="hero-trust-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Secure payments
+        </div>
+        <div class="hero-trust-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/></svg>
+          Protection plans
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Image Grid -->
+    <div class="hero-right reveal reveal-delay-2">
+      <div class="hero-img-card hero-img-card--tall">
+        <img src="images/product_camera.jpg" alt="Sony camera available for rent" loading="eager">
+      </div>
+      <div class="hero-img-card" style="height:180px">
+        <img src="images/product_ps5.jpg" alt="PlayStation 5 available for rent" loading="eager">
+      </div>
+      <div class="hero-img-card" style="height:180px">
+        <img src="images/product_projector.jpg" alt="Projector available for rent" loading="eager">
+      </div>
+
+      <!-- Floating Marketplace Cards -->
+      <div class="hero-floating-card hero-fc--price">
+        <div class="hero-floating-card-icon" style="background:var(--brand-light)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;color:var(--brand)"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div>
+          <div style="font-size:.7rem;color:var(--text-muted);font-weight:500">Starting from</div>
+          <div style="color:var(--text-primary)">₹199 / day</div>
+        </div>
+      </div>
+
+      <div class="hero-floating-card hero-fc--available">
+        <div class="hero-floating-card-icon" style="background:var(--green-50)">
+          <div style="width:8px;height:8px;background:var(--green-500);border-radius:50%"></div>
+        </div>
+        <div>
+          <div style="font-size:.7rem;color:var(--text-muted);font-weight:500">Near you</div>
+          <div style="color:var(--text-primary)">Available nearby</div>
+        </div>
+      </div>
+
+      <div class="hero-floating-card hero-fc--verified">
+        <div class="hero-floating-card-icon" style="background:var(--blue-50)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;color:var(--brand)"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div>
+          <div style="font-size:.7rem;color:var(--text-muted);font-weight:500">Owner status</div>
+          <div style="color:var(--green-600)">Verified owner</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     2. HOW IT WORKS
+     ============================================================ -->
+<section id="how-it-works" class="section" aria-label="How SkipIt works">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="eyebrow">Simple process</span>
+      <h2>Rent in three simple steps.</h2>
+      <p>From finding the right item to returning it — the whole process is designed to be straightforward for both renters and item owners.</p>
+    </div>
+
+    <div class="steps-grid">
+      <div class="step-card reveal">
+        <div class="step-number">1</div>
+        <h3>Find</h3>
+        <p>Search for the product you need and discover available listings from verified owners nearby. Filter by category, location, and rental duration.</p>
+      </div>
+      <div class="step-card reveal reveal-delay-2">
+        <div class="step-number">2</div>
+        <h3>Rent</h3>
+        <p>Choose your rental duration, review the owner profile and listing details, and confirm your booking. Coordinate pickup directly with the owner.</p>
+      </div>
+      <div class="step-card reveal reveal-delay-3">
+        <div class="step-number">3</div>
+        <h3>Return</h3>
+        <p>Use the item for your rental period and return it according to the agreed terms. Leave a review and help build community trust.</p>
+      </div>
+    </div>
+
+    <!-- OWNER SIDE BANNER -->
+    <div class="owner-banner reveal">
+      <div>
+        <h3>Own it? Put it to work.</h3>
+        <p>Have something sitting unused? List it on SkipIt, set your rental price, manage availability, and start earning from idle assets. Simple, flexible, and on your terms.</p>
+      </div>
+      <a href="#for-owners" class="btn btn--outline btn--lg">Start Listing</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     3. MARKETPLACE PREVIEW
+     ============================================================ -->
+<section id="marketplace" class="section" aria-label="Marketplace">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="eyebrow">Live marketplace</span>
+      <h2>Things you could rent instead of buying.</h2>
+      <p>Browse real categories. Real products. From verified people in your community.</p>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="categories-filter reveal">
+      <button class="cat-btn active" data-cat="all">All</button>
+      <button class="cat-btn" data-cat="electronics">Electronics</button>
+      <button class="cat-btn" data-cat="gaming">Gaming</button>
+      <button class="cat-btn" data-cat="photography">Photography</button>
+      <button class="cat-btn" data-cat="tools">Tools</button>
+      <button class="cat-btn" data-cat="vehicles">Vehicles</button>
+      <button class="cat-btn" data-cat="sports">Sports</button>
+      <button class="cat-btn" data-cat="events">Events</button>
+      <button class="cat-btn" data-cat="furniture">Furniture</button>
+    </div>
+
+    <!-- Product Grid — populated by JS -->
+    <div class="listings-grid" id="listingsGrid"></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     4. THE PROBLEM
+     ============================================================ -->
+<section id="the-problem" class="section" aria-label="The problem with buying">
+  <div class="container">
+    <div class="problem-grid">
+      <div class="problem-left">
+        <h2 class="reveal">Most things we buy spend more time sitting unused.</h2>
+        <p class="reveal reveal-delay-1">
+          People purchase expensive products for occasional use. After the need disappears, those products sit unused while others spend money buying the same things. It's an inefficient cycle — for individuals, and for the economy.
+        </p>
+        <div class="problem-pills">
+          <div class="problem-pill reveal reveal-delay-2">
+            <div class="problem-pill-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <div class="problem-pill-content">
+              <h4>High upfront cost</h4>
+              <p>Buying means paying the full price upfront — even for something you'll only use a few times.</p>
+            </div>
+          </div>
+          <div class="problem-pill reveal reveal-delay-3">
+            <div class="problem-pill-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="problem-pill-content">
+              <h4>Low utilization</h4>
+              <p>Most purchased items are used only occasionally. The rest of the time, they sit idle.</p>
+            </div>
+          </div>
+          <div class="problem-pill reveal reveal-delay-4">
+            <div class="problem-pill-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+            </div>
+            <div class="problem-pill-content">
+              <h4>Unused products collecting dust</h4>
+              <p>After the need passes, the product ends up stored away — a sunk cost.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparison -->
+      <div class="problem-right reveal reveal-delay-1">
+        <div class="comparison-card comparison-card--buy">
+          <div class="comparison-label">The old way — Buy</div>
+          <div class="comparison-flow">
+            <div class="flow-box">Pay full price</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box">Use occasionally</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box">Store it</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box">Repeat</div>
+          </div>
+        </div>
+        <div class="comparison-card comparison-card--rent">
+          <div class="comparison-label">The smarter way — Rent via SkipIt</div>
+          <div class="comparison-flow">
+            <div class="flow-box">Pay only when needed</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box">Use it</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box">Return it</div>
+          </div>
+        </div>
+        <div style="padding:24px;background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.2);border-radius:var(--radius-xl)">
+          <p style="font-size:.9375rem;color:rgba(255,255,255,.7);line-height:1.7">
+            <strong style="color:var(--blue-300)">The insight:</strong> You don't need to own something to access it. You just need to know someone who has it — and a marketplace you can trust.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     5. THE SOLUTION
+     ============================================================ -->
+<section id="solution" class="section" aria-label="SkipIt solution">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="eyebrow">How SkipIt works</span>
+      <h2>Skip the ownership. Keep the access.</h2>
+      <p>SkipIt creates a marketplace where people access products at a fraction of the purchase cost, owners monetize idle assets, and communities share resources more efficiently.</p>
+    </div>
+
+    <!-- Process Flow -->
+    <div class="solution-flow">
+      <div class="solution-step reveal">
+        <div class="solution-step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="solution-step-label">Owner Lists Item</div>
+      </div>
+      <div class="solution-arrow reveal reveal-delay-1">→</div>
+      <div class="solution-step reveal reveal-delay-1">
+        <div class="solution-step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div class="solution-step-label">Verification</div>
+      </div>
+      <div class="solution-arrow reveal reveal-delay-2">→</div>
+      <div class="solution-step reveal reveal-delay-2">
+        <div class="solution-step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </div>
+        <div class="solution-step-label">Renter Finds It</div>
+      </div>
+      <div class="solution-arrow reveal reveal-delay-3">→</div>
+      <div class="solution-step reveal reveal-delay-3">
+        <div class="solution-step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        </div>
+        <div class="solution-step-label">Payment</div>
+      </div>
+      <div class="solution-arrow reveal reveal-delay-4">→</div>
+      <div class="solution-step reveal reveal-delay-4">
+        <div class="solution-step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <div class="solution-step-label">Rental</div>
+      </div>
+      <div class="solution-arrow reveal reveal-delay-5">→</div>
+      <div class="solution-step reveal reveal-delay-5">
+        <div class="solution-step-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.25"/></svg>
+        </div>
+        <div class="solution-step-label">Return</div>
+      </div>
+    </div>
+
+    <!-- Benefits Grid -->
+    <div class="solution-benefits">
+      <div class="solution-benefit reveal">
+        <div class="solution-benefit-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <h4>Lower upfront cost</h4>
+        <p>Access products at a fraction of the purchase price.</p>
+      </div>
+      <div class="solution-benefit reveal reveal-delay-1">
+        <div class="solution-benefit-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <h4>Community sharing</h4>
+        <p>Products in communities get utilized, not stored away.</p>
+      </div>
+      <div class="solution-benefit reveal reveal-delay-2">
+        <div class="solution-benefit-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <h4>Owners earn</h4>
+        <p>Turn unused assets into a source of supplemental income.</p>
+      </div>
+      <div class="solution-benefit reveal reveal-delay-3">
+        <div class="solution-benefit-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h4>Higher utilization</h4>
+        <p>Products get used instead of sitting idle in storage.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     6. TRUST & SAFETY
+     ============================================================ -->
+<section id="trust" class="section" aria-label="Trust and safety">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="eyebrow">Trust &amp; Safety</span>
+      <h2>Built around trust.</h2>
+      <p>Peer-to-peer rentals work only when both sides trust the platform. SkipIt is being built with multiple layers of trust mechanisms designed for the Indian rental market.</p>
+    </div>
+
+    <div class="trust-grid">
+      <div class="trust-card reveal">
+        <div class="trust-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <h3>Identity &amp; KYC Verification</h3>
+        <p>Users verify their identity before accessing the marketplace. KYC helps establish accountability and builds trust between renters and owners.</p>
+      </div>
+      <div class="trust-card reveal reveal-delay-1">
+        <div class="trust-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <h3>User Profiles &amp; Reviews</h3>
+        <p>Transparent profiles with ratings and reviews from past rentals. A track record that helps both renters and owners make informed decisions.</p>
+      </div>
+      <div class="trust-card reveal reveal-delay-2">
+        <div class="trust-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Listing Moderation</h3>
+        <p>All listings go through automated checks before going live. Our system screens for prohibited items, suspicious content, and policy violations.</p>
+      </div>
+      <div class="trust-card reveal reveal-delay-3">
+        <div class="trust-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </div>
+        <h3>Fraud &amp; Spam Detection</h3>
+        <p>Automated systems monitor for suspicious activity, duplicate listings, abnormal pricing, and fraudulent behaviour across the platform.</p>
+        <span class="coming-soon">Active monitoring</span>
+      </div>
+      <div class="trust-card reveal reveal-delay-4">
+        <div class="trust-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        </div>
+        <h3>Secure Payments</h3>
+        <p>Payments processed securely through the platform. Deposits and rental payments are handled with clear policies that protect both parties.</p>
+      </div>
+      <div class="trust-card reveal reveal-delay-5">
+        <div class="trust-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.82 12a19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 3.78 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </div>
+        <h3>Dispute &amp; Support System</h3>
+        <p>A structured resolution process for disputes between renters and owners. Our support team is available to assist with rental issues.</p>
+        <span class="coming-soon">Coming soon</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     7. PROTECTION PLANS
+     ============================================================ -->
+<section id="protection" class="section" aria-label="Protection plans">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="eyebrow">Protection system</span>
+      <h2>Protection for every rental.</h2>
+      <p>SkipIt offers optional protection plans designed to reduce risk associated with accidental damage or eligible rental incidents. Plans are add-ons — not mandatory.</p>
+    </div>
+
+    <div class="plans-grid">
+      <!-- Basic -->
+      <div class="plan-card reveal">
+        <div class="plan-name">Plan</div>
+        <div class="plan-tier">Basic</div>
+        <div class="plan-description">Essential protection for everyday rentals. Provides a baseline level of coverage for eligible incidents.</div>
+        <div class="plan-features">
+          <div class="plan-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Coverage for eligible incidents
+          </div>
+          <div class="plan-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Basic accidental damage protection
+          </div>
+          <div class="plan-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Standard claim process
+          </div>
+        </div>
+      </div>
+
+      <!-- Premium -->
+      <div class="plan-card plan-card--featured reveal reveal-delay-2">
+        <div class="plan-badge">Most Popular</div>
+        <div class="plan-name">Plan</div>
+        <div class="plan-tier">Premium</div>
+        <div class="plan-description">Enhanced protection for higher-value rentals. More coverage, faster response, and broader incident eligibility.</div>
+        <div class="plan-features">
+          <div class="plan-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Expanded incident eligibility
+          </div>
+          <div class="plan-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Enhanced accidental damage cover
+          </div>
+          <div class="plan-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Priority claim processing
+          </div>
+          <div class="plan-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Dedicated support
+          </div>
+        </div>
+      </div>
+
+      <!-- Platinum -->
+      <div class="plan-card reveal reveal-delay-4">
+        <div class="plan-name">Plan</div>
+        <div class="plan-tier">Platinum</div>
+        <div class="plan-description">Maximum available protection for high-value items and rental scenarios where risk is a primary concern.</div>
+        <div class="plan-features">
+          <div class="plan-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Maximum coverage scope
+          </div>
+          <div class="plan-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Broadest incident eligibility
+          </div>
+          <div class="plan-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Expedited claim resolution
+          </div>
+          <div class="plan-feature">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Premium 1:1 support
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Deposit Notice -->
+    <div class="deposit-notice reveal">
+      <p>
+        <strong>About rental deposits:</strong> Deposits may be required depending on the item, category, owner requirements, and risk level. Deposits are a <strong>security mechanism</strong> — they are held separately and returned after a successful rental. They are not platform revenue.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     8. FOR OWNERS
+     ============================================================ -->
+<section id="for-owners" class="section" aria-label="For owners">
+  <div class="container">
+    <div class="split-section">
+      <div class="split-content reveal">
+        <span style="display:inline-block;font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brand);background:var(--brand-light);padding:5px 12px;border-radius:var(--radius-full);margin-bottom:16px">For Owners</span>
+        <h2>Your unused stuff could be earning.</h2>
+        <p>Have something sitting unused? List it on SkipIt and turn idle assets into income. You set the price, manage availability, and earn whenever someone rents your item.</p>
+        <div class="benefits-list">
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </div>
+            <div class="benefit-text">
+              <h4>Create listings easily</h4>
+              <p>List your item with photos, description, and pricing in just a few steps.</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <div class="benefit-text">
+              <h4>Set your rental price</h4>
+              <p>You decide the daily rate. Earn from every approved rental.</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <div class="benefit-text">
+              <h4>Manage availability</h4>
+              <p>Control when your item is available and review rental requests before approving.</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
+            </div>
+            <div class="benefit-text">
+              <h4>Build your reputation</h4>
+              <p>Reviews from renters help you build credibility and attract more bookings.</p>
+            </div>
+          </div>
+        </div>
+        <a href="#" class="btn btn--primary btn--lg" onclick="alert('Sign up to start listing!')">
+          Start Listing
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px"><path d="m5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="split-visual reveal reveal-delay-2">
+        <div class="split-visual-img">
+          <img src="images/product_camera.jpg" alt="Camera listing on SkipIt" loading="lazy">
+        </div>
+        <div style="margin-top:20px;padding:20px;background:var(--brand-light);border-radius:var(--radius-xl);border:1px solid var(--blue-200)">
+          <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--brand);margin-bottom:12px">Example listing</div>
+          <div style="font-family:var(--font-sans);font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:4px">Sony Alpha Mirrorless Camera</div>
+          <div style="font-size:.875rem;color:var(--text-secondary);margin-bottom:12px">Listed by Rahul · Bengaluru</div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div style="font-family:var(--font-sans);font-size:1.375rem;font-weight:900;color:var(--text-primary)">₹799<span style="font-size:.875rem;font-weight:500;color:var(--text-muted)">/day</span></div>
+            <span style="background:var(--green-50);color:var(--green-600);font-size:.75rem;font-weight:700;padding:4px 10px;border-radius:var(--radius-full)">Available</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     9. FOR RENTERS
+     ============================================================ -->
+<section id="for-renters" class="section" aria-label="For renters">
+  <div class="container">
+    <div class="split-section">
+      <!-- Visual first on this section -->
+      <div class="split-visual reveal">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div style="border-radius:var(--radius-xl);overflow:hidden">
+            <img src="images/product_bike.jpg" alt="Bike rental" loading="lazy" style="width:100%;height:180px;object-fit:cover">
+          </div>
+          <div style="border-radius:var(--radius-xl);overflow:hidden">
+            <img src="images/product_tent.jpg" alt="Tent rental" loading="lazy" style="width:100%;height:180px;object-fit:cover">
+          </div>
+        </div>
+        <div style="margin-top:12px;padding:20px;background:var(--white);border-radius:var(--radius-xl);border:1px solid var(--border);display:flex;align-items:center;gap:16px">
+          <div style="width:48px;height:48px;border-radius:var(--radius-lg);background:var(--brand-light);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:22px;height:22px;color:var(--brand)" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div>
+            <div style="font-family:var(--font-sans);font-weight:700;font-size:.9375rem">Flexible rental periods</div>
+            <div style="font-size:.875rem;color:var(--text-secondary)">Rent for a day, a weekend, or longer — on your schedule.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="split-content reveal reveal-delay-2">
+        <span style="display:inline-block;font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brand);background:var(--brand-light);padding:5px 12px;border-radius:var(--radius-full);margin-bottom:16px">For Renters</span>
+        <h2>Get access without the commitment.</h2>
+        <p>Stop buying things you'll only use a handful of times. SkipIt gives you access to a wide range of products from verified owners, at a fraction of the purchase cost.</p>
+        <div class="benefits-list">
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <div class="benefit-text">
+              <h4>Lower upfront cost</h4>
+              <p>Pay only for the duration you actually need the product.</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div class="benefit-text">
+              <h4>Discover products nearby</h4>
+              <p>Browse listings from people in your city and neighbourhood.</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="benefit-text">
+              <h4>Verified users</h4>
+              <p>All owners are verified. Ratings and reviews build a reliable trust layer.</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <div class="benefit-text">
+              <h4>Flexible rental periods</h4>
+              <p>Choose the exact dates you need — no long-term commitment required.</p>
+            </div>
+          </div>
+        </div>
+        <a href="#marketplace" class="btn btn--primary btn--lg">
+          Explore Rentals
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px"><path d="m5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     10. BUSINESS MODEL
+     ============================================================ -->
+<section id="business-model" class="section" aria-label="Business model">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="eyebrow">How SkipIt earns</span>
+      <h2>A marketplace designed to scale.</h2>
+      <p>SkipIt generates revenue primarily through a commission on successful rental transactions. The model is straightforward and transparent.</p>
+    </div>
+
+    <div class="biz-grid">
+      <!-- Revenue -->
+      <div class="biz-card biz-card--revenue reveal">
+        <div class="biz-card-label">Platform Revenue</div>
+        <div class="commission-highlight">
+          <span class="commission-percent">12</span>
+          <span class="commission-suffix">%</span>
+        </div>
+        <h3>Commission per transaction</h3>
+        <p>SkipIt earns a 12% commission on every successful rental transaction completed through the platform. This is the primary revenue mechanism.</p>
+        <div class="revenue-items">
+          <div class="rev-item"><div class="rev-item-dot"></div>Charged on rental value only</div>
+          <div class="rev-item"><div class="rev-item-dot"></div>Optional protection plan fees</div>
+          <div class="rev-item"><div class="rev-item-dot"></div>No hidden platform charges</div>
+        </div>
+      </div>
+      <!-- Deposit -->
+      <div class="biz-card biz-card--deposit reveal reveal-delay-2">
+        <div class="biz-card-label">Security Mechanism</div>
+        <h3>Rental deposits — not platform revenue</h3>
+        <p style="margin-bottom:16px">Rental deposits may be required for certain items, categories, or risk levels. It is important to understand the distinction:</p>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="padding:16px;background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border)">
+            <div style="font-family:var(--font-sans);font-size:.875rem;font-weight:700;color:var(--text-primary);margin-bottom:4px">Deposits are held security</div>
+            <div style="font-size:.875rem;color:var(--text-secondary);line-height:1.5">They are returned after a successful rental is completed. They are not earned by SkipIt.</div>
+          </div>
+          <div style="padding:16px;background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border)">
+            <div style="font-family:var(--font-sans);font-size:.875rem;font-weight:700;color:var(--text-primary);margin-bottom:4px">Commission is platform revenue</div>
+            <div style="font-size:.875rem;color:var(--text-secondary);line-height:1.5">Only the 12% commission on the rental value is retained by SkipIt as earnings.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:32px;padding:24px 32px;background:var(--bg-subtle);border:1px solid var(--border);border-radius:var(--radius-xl);text-align:center" class="reveal">
+      <p style="font-size:.9375rem;color:var(--text-secondary);line-height:1.6">
+        <strong>Note on logistics:</strong> SkipIt does not provide any logistics or delivery service. Pickup and return arrangements are made directly between the renter and owner according to the rental agreement.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     11. SMART MARKETPLACE
+     ============================================================ -->
+<section id="smart-marketplace" class="section" aria-label="Smart marketplace technology">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="eyebrow">Platform technology</span>
+      <h2>More than listings. A smarter marketplace.</h2>
+      <p>SkipIt builds marketplace intelligence into the platform — helping maintain listing quality, detect issues early, and support a healthier rental community.</p>
+    </div>
+
+    <div class="smart-grid">
+      <div class="smart-card reveal">
+        <div class="smart-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </div>
+        <h4>Automated Listing Checks</h4>
+        <p>Listings are reviewed against content policies before going live on the marketplace.</p>
+      </div>
+      <div class="smart-card reveal reveal-delay-1">
+        <div class="smart-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        </div>
+        <h4>Duplicate Detection</h4>
+        <p>System-level checks identify and flag duplicate or near-identical listings.</p>
+      </div>
+      <div class="smart-card reveal reveal-delay-2">
+        <div class="smart-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <h4>Spam &amp; Keyword Screening</h4>
+        <p>Suspicious keywords and patterns are flagged before listing publication.</p>
+      </div>
+      <div class="smart-card reveal reveal-delay-3">
+        <div class="smart-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <h4>Abnormal Pricing Detection</h4>
+        <p>Pricing outliers — unusually high or suspiciously low — are flagged for review.</p>
+      </div>
+      <div class="smart-card reveal reveal-delay-1">
+        <div class="smart-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+        </div>
+        <h4>Image &amp; Content Checks</h4>
+        <p>Listing images and content are reviewed for quality, relevance, and policy compliance.</p>
+      </div>
+      <div class="smart-card reveal reveal-delay-2">
+        <div class="smart-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h4>Fraud Indicators</h4>
+        <p>Behavioural patterns associated with fraudulent activity are monitored and actioned.</p>
+      </div>
+      <div class="smart-card reveal reveal-delay-3">
+        <div class="smart-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <h4>Human Moderation</h4>
+        <p>Listings flagged by automated systems are reviewed by our human moderation team.</p>
+      </div>
+      <div class="smart-card reveal reveal-delay-4">
+        <div class="smart-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h4>Risk-Based Monitoring</h4>
+        <p>Ongoing monitoring focuses attention on higher-risk transaction patterns and users.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     12. COMMUNITY EFFECT
+     ============================================================ -->
+<section id="community" class="section" aria-label="Community impact">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="eyebrow">The bigger picture</span>
+      <h2>Access over ownership.</h2>
+      <p>SkipIt is built on a simple idea: communities benefit when people share access to things rather than everyone buying the same items separately.</p>
+    </div>
+
+    <div class="community-stats">
+      <div class="stat-card reveal">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div class="stat-value">Lower</div>
+        <div class="stat-label">Upfront costs for renters</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-1">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div class="stat-value">Higher</div>
+        <div class="stat-label">Asset utilization in communities</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-2">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div class="stat-value">More</div>
+        <div class="stat-label">Earning opportunities for owners</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-3">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="stat-value">Better</div>
+        <div class="stat-label">Community-driven access</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     13. FINAL CTA
+     ============================================================ -->
+<section id="cta-section" class="section" aria-label="Get started">
+  <div class="container cta-inner reveal">
+    <p class="cta-headline">Stop buying for the occasional.</p>
+    <p class="cta-subtext">Find it. Rent it. Use it. Return it.</p>
+    <div class="cta-btns">
+      <a href="#marketplace" class="btn btn--white btn--lg" id="cta-explore-btn">
+        Explore SkipIt
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px"><path d="m5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#for-owners" class="btn btn--outline-white btn--lg" id="cta-list-btn">List Your Item</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================================================
+     14. FOOTER
+     ============================================================ -->
+<footer id="footer" aria-label="Site footer">
+  <div class="container">
+    <div class="footer-grid">
+      <!-- Brand -->
+      <div>
+        <div class="footer-brand-logo">
+          <div class="nav-logo-icon" style="background:rgba(255,255,255,.12);width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;fill:white">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+          </div>
+          <span style="font-family:var(--font-sans);font-size:1.25rem;font-weight:800;color:white;letter-spacing:-.05em;text-transform:lowercase">skipit</span>
+        </div>
+        <p class="footer-tagline">Skip buying. Rent smarter.<br>Peer-to-peer rental marketplace — India.</p>
+        <div class="footer-socials">
+          <a href="#" class="social-btn" aria-label="Instagram" title="SkipIt on Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+            </svg>
+          </a>
+          <a href="#" class="social-btn" aria-label="LinkedIn" title="SkipIt on LinkedIn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+            </svg>
+          </a>
+          <a href="#" class="social-btn" aria-label="X (Twitter)" title="SkipIt on X">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Marketplace -->
+      <div class="footer-col">
+        <h5>Marketplace</h5>
+        <div class="footer-links">
+          <a href="#marketplace" class="footer-link">Browse Listings</a>
+          <a href="#how-it-works" class="footer-link">How It Works</a>
+          <a href="#for-owners" class="footer-link">List an Item</a>
+          <a href="#" class="footer-link">Categories</a>
+          <a href="#" class="footer-link">Search</a>
+        </div>
+      </div>
+
+      <!-- Company -->
+      <div class="footer-col">
+        <h5>Company</h5>
+        <div class="footer-links">
+          <a href="#" class="footer-link">About SkipIt</a>
+          <a href="#trust" class="footer-link">Safety &amp; Trust</a>
+          <a href="#protection" class="footer-link">Protection Plans</a>
+          <a href="#" class="footer-link">Contact</a>
+          <a href="#" class="footer-link">Help Center</a>
+        </div>
+      </div>
+
+      <!-- Legal -->
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <div class="footer-links">
+          <a href="#" class="footer-link">Terms of Service</a>
+          <a href="#" class="footer-link">Privacy Policy</a>
+          <a href="#" class="footer-link">Rental Policy</a>
+          <a href="#" class="footer-link">Refund Policy</a>
+          <a href="#" class="footer-link">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2024 SkipIt. All rights reserved.</p>
+      <div class="footer-legal">
+        <a href="#">Terms</a>
+        <a href="#">Privacy</a>
+        <a href="#">Rental Policy</a>
+        <a href="#">Refund Policy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>
